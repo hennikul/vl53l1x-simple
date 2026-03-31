@@ -82,32 +82,10 @@ where
 
         this.init(delay)?;
 
-        // Verify communication works after init, before changing address.
-        this.read(reg::Register::IdentificationModelId as u16)
-            .map_err(InitialisationError::I2C)?;
-
         this.set_address(address)
             .map_err(InitialisationError::I2C)?;
 
-        // Verify communication still works after set_address.
-        this.read(reg::Register::IdentificationModelId as u16)
-            .map_err(InitialisationError::I2C)?;
-
         this.start_continuous(50)
-            .map_err(InitialisationError::I2C)?;
-
-        // Diagnostic: multiple consecutive reads to find where communication breaks.
-        // Read 1: status register
-        this.read(reg::Register::GpioTioHvStatus as u16)
-            .map_err(InitialisationError::I2C)?;
-        // Read 2: same register again
-        this.read(reg::Register::GpioTioHvStatus as u16)
-            .map_err(InitialisationError::I2C)?;
-        // Read 3: data_ready check (same read, just via method)
-        let _ready = this.data_ready()
-            .map_err(InitialisationError::I2C)?;
-        // Read 4: 17-byte bulk read via read_results
-        let _results = this.read_results()
             .map_err(InitialisationError::I2C)?;
 
         Ok(this)
@@ -142,6 +120,12 @@ where
     /// to power off, then later call `Vl53l1x::new()` again to reinitialise.
     pub fn into_parts(self) -> (I2C, X) {
         (self.i2c, self._x_shut)
+    }
+
+    /// Read a single byte from a 16-bit register address.
+    /// Useful for diagnostics and verifying I2C communication.
+    pub fn read_register(&mut self, register: u16) -> Result<u8, EI2C> {
+        self.read(register)
     }
 
     pub fn set_roi(&mut self, width: u8, height: u8, center: u8) -> Result<(), EI2C> {
