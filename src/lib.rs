@@ -55,6 +55,23 @@ where
     /// # Errors
     /// Forwards any errors from the I2C bus and xshut pin, as well as any
     /// initialisation errors from the device itself.
+    /// Create a driver instance without initialising the sensor.
+    /// The caller is responsible for XSHUT reset and sensor configuration.
+    /// Useful when applying a custom init sequence (e.g. ST ULD config).
+    pub fn new_uninit(i2c: I2C, x_shut: X, address: u8) -> Self {
+        Self {
+            i2c,
+            _x_shut: x_shut,
+            address,
+            fast_osc_frequency: 0,
+            osc_calibrate_val: 0,
+            distance_mode: imp::DistanceMode::Long,
+            calibrated: false,
+            saved_vhv_init: 0,
+            saved_vhv_timeout: 0,
+        }
+    }
+
     pub fn new(
         i2c: I2C,
         mut x_shut: X,
