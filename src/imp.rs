@@ -704,7 +704,7 @@ where
         Ok(u16::from(data[0]) << 8 | u16::from(data[1]))
     }
 
-    fn write(&mut self, register: u16, data: u8) -> Result<(), EI2C> {
+    pub(crate) fn write(&mut self, register: u16, data: u8) -> Result<(), EI2C> {
         #[allow(clippy::cast_possible_truncation)]
         self.i2c
             .write(self.address, &[(register >> 8) as u8, register as u8, data])
