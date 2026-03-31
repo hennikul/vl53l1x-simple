@@ -82,10 +82,22 @@ where
 
         this.init(delay)?;
 
+        // Verify communication works after init, before changing address.
+        this.read(reg::Register::IdentificationModelId as u16)
+            .map_err(InitialisationError::I2C)?;
+
         this.set_address(address)
             .map_err(InitialisationError::I2C)?;
 
+        // Verify communication still works after set_address.
+        this.read(reg::Register::IdentificationModelId as u16)
+            .map_err(InitialisationError::I2C)?;
+
         this.start_continuous(50)
+            .map_err(InitialisationError::I2C)?;
+
+        // Verify communication still works after start_continuous.
+        this.read(reg::Register::GpioTioHvStatus as u16)
             .map_err(InitialisationError::I2C)?;
 
         Ok(this)

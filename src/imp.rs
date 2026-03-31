@@ -682,7 +682,7 @@ where
     I2C: embedded_hal::i2c::I2c<Error = EI2C>,
     X: embedded_hal::digital::OutputPin<Error = EX>,
 {
-    fn read(&mut self, register: u16) -> Result<u8, EI2C> {
+    pub(crate) fn read(&mut self, register: u16) -> Result<u8, EI2C> {
         let mut data = [0];
         #[allow(clippy::cast_possible_truncation)]
         self.i2c.write_read(
