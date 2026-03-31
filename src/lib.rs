@@ -101,4 +101,29 @@ where
     pub fn try_read(&mut self) -> Result<Option<u16>, EI2C> {
         self.try_read_inner()
     }
+
+    /// Set the Region of Interest (ROI) for the sensor.
+    ///
+    /// The ROI controls which SPADs (Single Photon Avalanche Diodes) are used
+    /// for ranging. A smaller ROI focused on the center reduces noise from
+    /// multi-path reflections.
+    ///
+    /// - `width`: ROI width in SPADs (4–16)
+    /// - `height`: ROI height in SPADs (4–16)
+    /// - `center`: SPAD index for the ROI center (e.g. 199 for a centered ROI)
+    ///
+    /// # Errors
+    /// Forwards any errors from the I2C bus.
+    pub fn set_roi(&mut self, width: u8, height: u8, center: u8) -> Result<(), EI2C> {
+        self.write(
+            reg::Register::RoiConfigUserRoiCentreSpad as u16,
+            center,
+        )?;
+        let size = ((height.saturating_sub(1)) << 4) | (width.saturating_sub(1));
+        self.write(
+            reg::Register::RoiConfigUserRoiRequestedGlobalXySize as u16,
+            size,
+        )?;
+        Ok(())
+    }
 }

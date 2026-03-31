@@ -52,4 +52,6 @@ pub(crate) enum Register {
     PhasecalConfigOverride = 0x004D,
     CalConfigVcselStart = 0x0047,
     PhasecalResultVcselStart = 0x00D8,
+    RoiConfigUserRoiCentreSpad = 0x007F,
+    RoiConfigUserRoiRequestedGlobalXySize = 0x0080,
 }
