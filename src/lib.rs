@@ -123,9 +123,13 @@ where
     }
 
     /// Read a single byte from a 16-bit register address.
-    /// Useful for diagnostics and verifying I2C communication.
     pub fn read_register(&mut self, register: u16) -> Result<u8, EI2C> {
         self.read(register)
+    }
+
+    /// Write a single byte to a 16-bit register address.
+    pub fn write_register(&mut self, register: u16, value: u8) -> Result<(), EI2C> {
+        self.write(register, value)
     }
 
     pub fn set_roi(&mut self, width: u8, height: u8, center: u8) -> Result<(), EI2C> {
