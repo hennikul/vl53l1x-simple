@@ -8,7 +8,7 @@ pub(crate) enum DistanceMode {
 }
 
 #[derive(Default)]
-struct ResultBuffer {
+pub(crate) struct ResultBuffer {
     range_status: u8,
     // uint8_t report_status: not used
     stream_count: u8,
