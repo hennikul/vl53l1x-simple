@@ -114,6 +114,14 @@ where
     ///
     /// # Errors
     /// Forwards any errors from the I2C bus.
+    /// Consume the driver and return the I2C bus and XSHUT pin.
+    ///
+    /// Use this to power-cycle the sensor: recover the pin, drive XSHUT low
+    /// to power off, then later call `Vl53l1x::new()` again to reinitialise.
+    pub fn into_parts(self) -> (I2C, X) {
+        (self.i2c, self._x_shut)
+    }
+
     pub fn set_roi(&mut self, width: u8, height: u8, center: u8) -> Result<(), EI2C> {
         self.write(
             reg::Register::RoiConfigUserRoiCentreSpad as u16,
