@@ -96,15 +96,19 @@ where
         this.start_continuous(50)
             .map_err(InitialisationError::I2C)?;
 
-        // Verify communication still works after start_continuous.
+        // Diagnostic: multiple consecutive reads to find where communication breaks.
+        // Read 1: status register
         this.read(reg::Register::GpioTioHvStatus as u16)
             .map_err(InitialisationError::I2C)?;
-
-        // Verify try_read works before returning.
-        match this.try_read_inner() {
-            Ok(_) => {}
-            Err(e) => return Err(InitialisationError::I2C(e)),
-        }
+        // Read 2: same register again
+        this.read(reg::Register::GpioTioHvStatus as u16)
+            .map_err(InitialisationError::I2C)?;
+        // Read 3: data_ready check (same read, just via method)
+        let _ready = this.data_ready()
+            .map_err(InitialisationError::I2C)?;
+        // Read 4: 17-byte bulk read via read_results
+        let _results = this.read_results()
+            .map_err(InitialisationError::I2C)?;
 
         Ok(this)
     }

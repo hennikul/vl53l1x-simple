@@ -379,11 +379,11 @@ where
         Ok(())
     }
 
-    fn data_ready(&mut self) -> Result<bool, EI2C> {
+    pub(crate) fn data_ready(&mut self) -> Result<bool, EI2C> {
         Ok((self.read(Register::GpioTioHvStatus as u16)? & 0x01) == 0)
     }
 
-    fn read_results(&mut self) -> Result<ResultBuffer, EI2C> {
+    pub(crate) fn read_results(&mut self) -> Result<ResultBuffer, EI2C> {
         let mut results = ResultBuffer::default();
 
         let mut data: [u8; 17] = [0; 17];
