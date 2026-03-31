@@ -100,6 +100,12 @@ where
         this.read(reg::Register::GpioTioHvStatus as u16)
             .map_err(InitialisationError::I2C)?;
 
+        // Verify try_read works before returning.
+        match this.try_read_inner() {
+            Ok(_) => {}
+            Err(e) => return Err(InitialisationError::I2C(e)),
+        }
+
         Ok(this)
     }
 
