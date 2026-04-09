@@ -139,6 +139,12 @@ where
         (self.i2c, self._x_shut)
     }
 
+    /// Shared reference to the underlying I2C bus.
+    /// Allows the caller to perform compound operations with bus-level locking.
+    pub fn i2c(&self) -> &I2C {
+        &self.i2c
+    }
+
     /// Read a single byte from a 16-bit register address.
     pub fn read_register(&mut self, register: u16) -> Result<u8, EI2C> {
         self.read(register)
